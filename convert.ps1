@@ -1,56 +1,50 @@
 $path = 'C:\temp\Config'
 
+function MultiLang ($nodes) {
+    $map = @{}; $nodes | Sort-Object -Property lang | % {$map[$_.lang] = $_.Content}; $map
+}
+
+function SaveAsZippedJson ($list, $name) {
+    $list | ConvertTo-Json -Depth 2 | Out-File "$name.json" -Encoding 'utf8'
+    Compress-Archive -Path "$name.json" -DestinationPath "$name.zip" -Force
+    Remove-Item "$name.json"
+}
+
 #----------------------------------------------------------------------------------------------------------------------
 
+$name = 'Documents'
 $list = @()
 
-Get-ChildItem "$path\Documents" -Filter *.xml | % {
-    
-    [xml]$Data = Get-Content $_.FullName
-    
-    $Prop = $Data.MetaDataObject.Document.Properties
-    
-    $Synonyms = $Prop.Synonym.ChildNodes 
-    $SynonymEn = $Synonyms.Where{$_.lang -eq 'en'}
-    $SynonymRu = $Synonyms.Where{$_.lang -eq 'ru'}
-    
-    $list += $Prop |
+Get-ChildItem "$path\$name" -Filter *.xml | % {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.Document.Properties
+    $list += $prop |
     select `
         Name,
-        @{Name="Synonym";Expression={@{en=$SynonymEn.Content;ru=$SynonymRu.Content}}},
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
         Posting,
         RealTimePosting,
         RegisterRecordsDeletion,
         RegisterRecordsWritingOnPost 
 }
 
-$list | ConvertTo-Json -Depth 2 | Out-File Documents.json -Encoding 'utf8'
-Compress-Archive -Path Documents.json -DestinationPath Documents.zip -Force
-Remove-Item Documents.json
+SaveAsZippedJson $list $name
 
 #----------------------------------------------------------------------------------------------------------------------
 
+$name = 'Catalogs'
 $list = @()
 
-Get-ChildItem "$path\Catalogs" -Filter *.xml | % {
-    
-    [xml]$Data = Get-Content $_.FullName
-    
-    $Prop = $Data.MetaDataObject.Catalog.Properties
-    
-    $Synonyms = $Prop.Synonym.ChildNodes 
-    $SynonymEn = $Synonyms.Where{$_.lang -eq 'en'}
-    $SynonymRu = $Synonyms.Where{$_.lang -eq 'ru'}
-
-    $list += $Prop |
+Get-ChildItem "$path\$name" -Filter *.xml | % {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.Catalog.Properties
+    $list += $prop |
     select `
         Name,
-        @{Name="Synonym";Expression={@{en=$SynonymEn.Content;ru=$SynonymRu.Content}}},
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
         Hierarchical,
         HierarchyType,
         LimitLevelCount
 }
 
-$list | ConvertTo-Json -Depth 2 | Out-File Catalogs.json -Encoding 'utf8'
-Compress-Archive -Path Catalogs.json -DestinationPath Catalogs.zip -Force
-Remove-Item Catalogs.json
+SaveAsZippedJson $list $name
