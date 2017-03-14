@@ -10,6 +10,10 @@ function SaveAsZippedJson ($list, $name) {
     Remove-Item "$name.json"
 }
 
+function ListOfNames ($items) {
+    $list = @(); $items | Sort-Object -Property InnerText | % {$list += $_.InnerText}; $list -join ","
+}
+
 #----------------------------------------------------------------------------------------------------------------------
 
 $name = 'Documents'
@@ -33,7 +37,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         Autonumbering,
         # StandardAttributes,
         # Characteristics,
-        # BasedOn,
+        @{Name='BasedOn'; Expression={ListOfNames $prop.BasedOn.ChildNodes}},
         # InputByString,
         CreateOnInput,
         SearchStringModeOnInputByString,
@@ -51,6 +55,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         RegisterRecordsWritingOnPost,
         SequenceFilling,
         # RegisterRecords,
+        @{Name='RegisterRecords'; Expression={ListOfNames $prop.RegisterRecords.ChildNodes}},
         PostInPrivilegedMode,
         UnpostInPrivilegedMode,
         IncludeHelpInContents,
@@ -85,7 +90,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         LevelCount,
         FoldersOnTop,
         UseStandardCommands,
-        # Owners,
+        @{Name='Owners'; Expression={ListOfNames $prop.Owners.ChildNodes}},
         SubordinationUse,
         CodeLength,
         DescriptionLength,
@@ -116,7 +121,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         AuxiliaryChoiceForm,
         AuxiliaryFolderChoiceForm,
         IncludeHelpInContents,
-        # BasedOn,
+        @{Name='BasedOn'; Expression={ListOfNames $prop.BasedOn.ChildNodes}},
         # DataLockFields,
         DataLockControlMode,
         FullTextSearch,
