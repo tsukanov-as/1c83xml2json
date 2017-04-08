@@ -2,7 +2,7 @@ $path = 'C:\temp\Config'
 Remove-Item '*.zip'
 
 function MultiLang ($nodes) {
-    $map = @{}; $nodes | Sort-Object -Property lang | % {$map[$_.lang] = $_.Content}; $map
+    $map = @{}; $nodes | Sort-Object -Property lang | ForEach-Object {$map[$_.lang] = $_.Content}; $map
 }
 
 function SaveAsZippedJson ($list, $name) {
@@ -12,7 +12,7 @@ function SaveAsZippedJson ($list, $name) {
 }
 
 function ListOfNames ($items) {
-    $list = @(); $items | Sort-Object -Property InnerText | % {$list += $_.InnerText}; $list -join ","
+    $list = @(); $items | Sort-Object -Property InnerText | ForEach-Object {$list += $_.InnerText}; $list -join ","
 }
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -20,11 +20,11 @@ function ListOfNames ($items) {
 $name = 'Documents'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | % {
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
     [xml]$data = Get-Content $_.FullName
     $prop = $data.MetaDataObject.Document.Properties
     $list += $prop |
-    select `
+    Select-Object `
         Name,
         @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
         Comment,
@@ -77,11 +77,11 @@ SaveAsZippedJson $list $name
 $name = 'Catalogs'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | % {
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
     [xml]$data = Get-Content $_.FullName
     $prop = $data.MetaDataObject.Catalog.Properties
     $list += $prop |
-    select `
+    Select-Object `
         Name,
         @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
         Hierarchical,
