@@ -1,4 +1,5 @@
 $path = 'C:\temp\Config'
+Remove-Item '*.zip'
 
 function MultiLang ($nodes) {
     $map = @{}; $nodes | Sort-Object -Property lang | % {$map[$_.lang] = $_.Content}; $map
@@ -28,7 +29,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
         Comment,
         UseStandardCommands,
-        # Numerator,
+        Numerator,
         NumberType,
         NumberLength,
         NumberAllowedLength,
@@ -38,7 +39,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         # StandardAttributes,
         # Characteristics,
         @{Name='BasedOn'; Expression={ListOfNames $prop.BasedOn.ChildNodes}},
-        # InputByString,
+        @{Name='InputByString'; Expression={ListOfNames $prop.InputByString.ChildNodes}},
         CreateOnInput,
         SearchStringModeOnInputByString,
         FullTextSearchOnInputByString,
@@ -54,12 +55,11 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         RegisterRecordsDeletion,
         RegisterRecordsWritingOnPost,
         SequenceFilling,
-        # RegisterRecords,
         @{Name='RegisterRecords'; Expression={ListOfNames $prop.RegisterRecords.ChildNodes}},
         PostInPrivilegedMode,
         UnpostInPrivilegedMode,
         IncludeHelpInContents,
-        # DataLockFields,
+        @{Name='DataLockFields'; Expression={ListOfNames $prop.DataLockFields.ChildNodes}},
         DataLockControlMode,
         FullTextSearch,
         @{Name='ObjectPresentation'; Expression={MultiLang $prop.ObjectPresentation.ChildNodes}},
@@ -106,7 +106,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         EditType,
         QuickChoice,
         ChoiceMode,
-        # InputByString,
+        @{Name='InputByString'; Expression={ListOfNames $prop.InputByString.ChildNodes}},
         SearchStringModeOnInputByString,
         FullTextSearchOnInputByString,
         ChoiceDataGetModeOnInputByString,
@@ -122,7 +122,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | % {
         AuxiliaryFolderChoiceForm,
         IncludeHelpInContents,
         @{Name='BasedOn'; Expression={ListOfNames $prop.BasedOn.ChildNodes}},
-        # DataLockFields,
+        @{Name='DataLockFields'; Expression={ListOfNames $prop.DataLockFields.ChildNodes}},
         DataLockControlMode,
         FullTextSearch,
         @{Name='ObjectPresentation'; Expression={MultiLang $prop.ObjectPresentation.ChildNodes}},
