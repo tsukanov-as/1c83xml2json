@@ -60,6 +60,8 @@ function ChildObjects ($nodes) {
     $tabularSections = @{}
     $commands = @{}
     $templates = @()
+    $dimensions = @{}
+    $resources = @{}
     $nodes | ForEach-Object {
         $obj = $_
         switch ($obj.name) {
@@ -123,6 +125,63 @@ function ChildObjects ($nodes) {
             'Template' {
                 $templates += $obj.ChildNodes.Value
             }
+            'Dimension' {
+                $prop = $obj.Properties
+                $dimensions[$prop.name] = $prop | Select-Object `
+                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+                    Comment,
+                    @{Name='Type'; Expression={ListOfNames $prop.Type.ChildNodes}},
+                    PasswordMode,
+                    Format,
+                    EditFormat,
+                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
+                    MarkNegatives,
+                    Mask,
+                    MultiLine,
+                    ExtendedEdit,
+                    @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
+                    @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
+                    FillChecking,
+                    ChoiceFoldersAndItems,
+                    ChoiceParameterLinks,
+                    ChoiceParameters,
+                    QuickChoice,
+                    CreateOnInput,
+                    ChoiceForm,
+                    LinkByType,
+                    ChoiceHistoryOnInput,
+                    DenyIncompleteValues,
+                    Indexing,
+                    FullTextSearch,
+                    UseInTotals
+            }
+            'Resource' {
+                $prop = $obj.Properties
+                $resources[$prop.name] = $prop | Select-Object `
+                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+                    Comment,
+                    @{Name='Type'; Expression={ListOfNames $prop.Type.ChildNodes}},
+                    PasswordMode,
+                    Format,
+                    EditFormat,
+                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
+                    MarkNegatives,
+                    Mask,
+                    MultiLine,
+                    ExtendedEdit,
+                    @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
+                    @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
+                    FillChecking,
+                    ChoiceFoldersAndItems,
+                    ChoiceParameterLinks,
+                    ChoiceParameters,
+                    QuickChoice,
+                    CreateOnInput,
+                    ChoiceForm,
+                    LinkByType,
+                    ChoiceHistoryOnInput,
+                    FullTextSearch
+            }
             default {Write-Host $_}
         }
     }
@@ -132,6 +191,8 @@ function ChildObjects ($nodes) {
     if ($tabularSections.Count -gt 0) {$result['TabularSections'] = $tabularSections}
     if ($commands.Count -gt 0) {$result['Commands'] = $commands}
     if ($templates.Count -gt 0) {$result['Templates'] = $templates}
+    if ($dimensions.Count -gt 0) {$result['Dimensions'] = $dimensions}
+    if ($resources.Count -gt 0) {$result['Resources'] = $resources}
     $result
 }
 
@@ -254,6 +315,36 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         CreateOnInput,
         ChoiceHistoryOnInput,
         @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.Catalog.ChildObjects.ChildNodes}}
+}
+
+SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'AccumulationRegisters'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.AccumulationRegister.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment,
+        UseStandardCommands,
+        DefaultListForm,
+        AuxiliaryListForm,
+        RegisterType,
+        IncludeHelpInContents,
+        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
+        DataLockControlMode,
+        FullTextSearch,
+        EnableTotalsSplitting,
+        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
+        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
+        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
+        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.AccumulationRegister.ChildObjects.ChildNodes}}
 }
 
 SaveAsZippedJson $list $name
