@@ -141,6 +141,8 @@ function ChildObjects ($nodes) {
                     ExtendedEdit,
                     @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
                     @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
+                    FillFromFillingValue,
+                    @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
                     FillChecking,
                     ChoiceFoldersAndItems,
                     ChoiceParameterLinks,
@@ -150,6 +152,8 @@ function ChildObjects ($nodes) {
                     ChoiceForm,
                     LinkByType,
                     ChoiceHistoryOnInput,
+                    Master,
+                    MainFilter,
                     DenyIncompleteValues,
                     Indexing,
                     FullTextSearch,
@@ -171,6 +175,8 @@ function ChildObjects ($nodes) {
                     ExtendedEdit,
                     @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
                     @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
+                    FillFromFillingValue,
+                    @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
                     FillChecking,
                     ChoiceFoldersAndItems,
                     ChoiceParameterLinks,
@@ -180,6 +186,7 @@ function ChildObjects ($nodes) {
                     ChoiceForm,
                     LinkByType,
                     ChoiceHistoryOnInput,
+                    Indexing,
                     FullTextSearch
             }
             default {Write-Host $_}
@@ -345,6 +352,43 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
         @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
         @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.AccumulationRegister.ChildObjects.ChildNodes}}
+}
+
+SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'InformationRegisters'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.InformationRegister.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment,
+        UseStandardCommands,
+        DefaultRecordForm,
+        DefaultListForm,
+        AuxiliaryRecordForm,
+        AuxiliaryListForm,
+        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
+        InformationRegisterPeriodicity,
+        WriteMode,
+        MainFilterOnPeriod,
+        IncludeHelpInContents,
+        DataLockControlMode,
+        FullTextSearch,
+        EnableTotalsSliceFirst,
+        EnableTotalsSliceLast,
+        @{Name='RecordPresentation'; Expression={MultiLang $prop.RecordPresentation.ChildNodes}},
+        @{Name='ExtendedRecordPresentation'; Expression={MultiLang $prop.ExtendedRecordPresentation.ChildNodes}},
+        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
+        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
+        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
+        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.InformationRegister.ChildObjects.ChildNodes}}
 }
 
 SaveAsZippedJson $list $name
