@@ -6,7 +6,7 @@ function MultiLang ($nodes) {
 }
 
 function SaveAsZippedJson ($list, $name) {
-    $list | ConvertTo-Json -Depth 4 | Out-File "$name.json" -Encoding 'utf8'
+    $list | ConvertTo-Json -Depth 5 | Out-File "$name.json" -Encoding 'utf8'
     Compress-Archive -Path "$name.json" -DestinationPath "$name.zip" -Force
     Remove-Item "$name.json"
 }
@@ -16,7 +16,11 @@ function ListOfNames ($items) {
 }
 
 function TypeValue ($node) {
-    @{$node.Type = $Node.ChildNodes.Value}
+    @{$node.Type = $node.ChildNodes.Value}
+}
+
+function Picture ($node) {
+    @{'Ref' = $node.Ref; 'LoadTransparent' = $node.LoadTransparent}
 }
 
 function StandardAttributes ($nodes) {
@@ -48,6 +52,87 @@ function StandardAttributes ($nodes) {
             ChoiceParameters
     }
     $map
+}
+
+function ChildObjects ($nodes) {
+    $attributes = @{}
+    $forms = @()
+    $tabularSections = @{}
+    $commands = @{}
+    $templates = @()
+    $nodes | ForEach-Object {
+        $obj = $_
+        switch ($obj.name) {
+            'Attribute' {
+                $prop = $obj.Properties
+                $attributes[$prop.name] = $prop | Select-Object `
+                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+                    Comment,
+                    @{Name='Type'; Expression={ListOfNames $prop.Type.ChildNodes}},
+                    PasswordMode,
+                    Format,
+                    EditFormat,
+                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
+                    MarkNegatives,
+                    Mask,
+                    MultiLine,
+                    ExtendedEdit,
+                    @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
+                    @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
+                    FillFromFillingValue,
+                    @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
+                    FillChecking,
+                    ChoiceFoldersAndItems,
+                    ChoiceParameterLinks,
+                    ChoiceParameters,
+                    QuickChoice,
+                    CreateOnInput,
+                    ChoiceForm,
+                    LinkByType,
+                    ChoiceHistoryOnInput,
+                    Indexing,
+                    FullTextSearch
+            }
+            'Form' {
+                $forms += $obj.ChildNodes.Value
+            }
+            'TabularSection' {
+                $prop = $obj.Properties
+                $tabularSections[$prop.name] = $prop | Select-Object `
+                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+                    Comment,
+                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
+                    FillChecking,
+                    @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
+                    @{Name='ChildObjects'; Expression={ChildObjects $obj.ChildObjects.ChildNodes}}
+            }
+            'Command' {
+                $prop = $obj.Properties
+                $commands[$prop.name] = $prop | Select-Object `
+                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+                    Comment,
+                    Group,
+                    @{Name='CommandParameterType'; Expression={ListOfNames $prop.CommandParameterType.ChildNodes}},
+                    ParameterUseMode,
+                    ModifiesData,
+                    Representation,
+                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
+                    @{Name='Picture'; Expression={Picture $prop.Picture}},
+                    Shortcut
+            }
+            'Template' {
+                $templates += $obj.ChildNodes.Value
+            }
+            default {Write-Host $_}
+        }
+    }
+    $result = @{}
+    if ($attributes.Count -gt 0) {$result['Attributes'] = $attributes}
+    if ($forms.Count -gt 0) {$result['Forms'] = $forms}
+    if ($tabularSections.Count -gt 0) {$result['TabularSections'] = $tabularSections}
+    if ($commands.Count -gt 0) {$result['Commands'] = $commands}
+    if ($templates.Count -gt 0) {$result['Templates'] = $templates}
+    $result
 }
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -102,7 +187,8 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
         @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
         @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
-        ChoiceHistoryOnInput
+        ChoiceHistoryOnInput,
+        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.Document.ChildObjects.ChildNodes}}
 }
 
 SaveAsZippedJson $list $name
@@ -166,7 +252,8 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
         @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
         CreateOnInput,
-        ChoiceHistoryOnInput
+        ChoiceHistoryOnInput,
+        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.Catalog.ChildObjects.ChildNodes}}
 }
 
 SaveAsZippedJson $list $name
