@@ -62,6 +62,7 @@ function ChildObjects ($nodes) {
     $templates = @()
     $dimensions = @{}
     $resources = @{}
+    $enumvalues = @{}
     $nodes | ForEach-Object {
         $obj = $_
         switch ($obj.name) {
@@ -189,6 +190,12 @@ function ChildObjects ($nodes) {
                     Indexing,
                     FullTextSearch
             }
+            'EnumValue' {
+                $prop = $obj.Properties
+                $enumvalues[$prop.name] = $prop | Select-Object `
+                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+                    Comment
+            }
             default {Write-Host $_}
         }
     }
@@ -200,6 +207,7 @@ function ChildObjects ($nodes) {
     if ($templates.Count -gt 0) {$result['Templates'] = $templates}
     if ($dimensions.Count -gt 0) {$result['Dimensions'] = $dimensions}
     if ($resources.Count -gt 0) {$result['Resources'] = $resources}
+    if ($enumvalues.Count -gt 0) {$result['EnumValues'] = $enumvalues}
     $result
 }
 
@@ -389,6 +397,76 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
         @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
         @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.InformationRegister.ChildObjects.ChildNodes}}
+}
+
+SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'Constants'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.Constant.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment,
+        UseStandardCommands,
+        DefaultForm,
+        @{Name='ExtendedPresentation'; Expression={MultiLang $prop.ExtendedPresentation.ChildNodes}},
+        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
+        PasswordMode,
+        Format,
+        EditFormat,
+        @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
+        MarkNegatives,
+        Mask,
+        MultiLine,
+        ExtendedEdit,
+        @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
+        @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
+        FillChecking,
+        ChoiceFoldersAndItems,
+        ChoiceParameterLinks,
+        ChoiceParameters,
+        QuickChoice,
+        ChoiceForm,
+        LinkByType,
+        ChoiceHistoryOnInput,
+        DataLockControlMode
+}
+
+SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'Enums'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.Enum.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment,
+        UseStandardCommands,
+        # Characteristics,
+        QuickChoice,
+        ChoiceMode,
+        DefaultListForm,
+        DefaultChoiceForm,
+        AuxiliaryListForm,
+        AuxiliaryChoiceForm,
+        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
+        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
+        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
+        ChoiceHistoryOnInput,
+        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.Enum.ChildObjects.ChildNodes}}
 }
 
 SaveAsZippedJson $list $name
