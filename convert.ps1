@@ -6,13 +6,48 @@ function MultiLang ($nodes) {
 }
 
 function SaveAsZippedJson ($list, $name) {
-    $list | ConvertTo-Json -Depth 2 | Out-File "$name.json" -Encoding 'utf8'
+    $list | ConvertTo-Json -Depth 4 | Out-File "$name.json" -Encoding 'utf8'
     Compress-Archive -Path "$name.json" -DestinationPath "$name.zip" -Force
     Remove-Item "$name.json"
 }
 
 function ListOfNames ($items) {
     $list = @(); $items | Sort-Object -Property InnerText | ForEach-Object {$list += $_.InnerText}; $list -join ","
+}
+
+function TypeValue ($node) {
+    @{$node.Type = $Node.ChildNodes.Value}
+}
+
+function StandardAttributes ($nodes) {
+    $map = @{}
+    $nodes | ForEach-Object {
+        $map[$_.name] = $_ | Select-Object `
+            LinkByType,
+            FillChecking,
+            MultiLine,
+            FillFromFillingValue,
+            CreateOnInput,
+            @{Name='MaxValue'; Expression={TypeValue $_.MaxValue}},
+            @{Name='ToolTip'; Expression={MultiLang $_.ToolTip.ChildNodes}},
+            ExtendedEdit,
+            Format,
+            ChoiceForm,
+            QuickChoice,
+            ChoiceHistoryOnInput,
+            EditFormat,
+            PasswordMode,
+            MarkNegatives,
+            @{Name='MinValue'; Expression={TypeValue $_.MinValue}},
+            @{Name='Synonym'; Expression={MultiLang $_.Synonym.ChildNodes}},
+            Comment,
+            FullTextSearch,
+            ChoiceParameterLinks,
+            @{Name='FillValue'; Expression={TypeValue $_.FillValue}},
+            Mask,
+            ChoiceParameters
+    }
+    $map
 }
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -36,7 +71,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         NumberPeriodicity,
         CheckUnique,
         Autonumbering,
-        # StandardAttributes,
+        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
         # Characteristics,
         @{Name='BasedOn'; Expression={ListOfNames $prop.BasedOn.ChildNodes}},
         @{Name='InputByString'; Expression={ListOfNames $prop.InputByString.ChildNodes}},
@@ -100,7 +135,7 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         CheckUnique,
         Autonumbering,
         DefaultPresentation,
-        # StandardAttributes,
+        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
         # Characteristics,
         PredefinedDataUpdate,
         EditType,
