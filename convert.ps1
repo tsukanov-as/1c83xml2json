@@ -6,7 +6,7 @@ function MultiLang ($nodes) {
 }
 
 function SaveAsZippedJson ($list, $name) {
-    $list | ConvertTo-Json -Depth 8 | Out-File "$name.json" -Encoding 'utf8'
+    $list | ConvertTo-Json -Depth 10 | Out-File "$name.json" -Encoding 'utf8'
     Compress-Archive -Path "$name.json" -DestinationPath "$name.zip" -Force
     Remove-Item "$name.json"
 }
@@ -16,11 +16,40 @@ function ListOfNames ($items) {
 }
 
 function TypeValue ($node) {
-    @{$node.Type = $node.ChildNodes.Value}
+    switch ($node.Type) {
+        'v8:FixedArray' {
+            $x = @()
+            $node.ChildNodes | ForEach-Object {
+                $x += TypeValue $_   
+            }
+            @{$node.Type = $x}
+        }
+        default {
+            @{$node.Type = $node.ChildNodes.Value}
+        }
+    }
 }
 
 function Picture ($node) {
     @{'Ref' = $node.Ref; 'LoadTransparent' = $node.LoadTransparent}
+}
+
+function ChoiceParameters ($nodes) {
+    $map = @{}
+    foreach ($item in $nodes) {
+        $map[$item.Attributes.Value] = TypeValue $item.ChildNodes
+    }
+    $map
+}
+
+function ChoiceParameterLinks ($nodes) {
+    $map = @{}
+    foreach ($item in $nodes) {
+        $map[$item.Name] = $item | Select-Object `
+            @{Name='DataPath'; Expression={TypeValue $item.DataPath}},
+            ValueChange
+    }
+    $map
 }
 
 function StandardAttributes ($nodes) {
@@ -46,10 +75,10 @@ function StandardAttributes ($nodes) {
             @{Name='Synonym'; Expression={MultiLang $_.Synonym.ChildNodes}},
             Comment,
             FullTextSearch,
-            ChoiceParameterLinks,
+            @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $_.ChoiceParameterLinks.ChildNodes}},
             @{Name='FillValue'; Expression={TypeValue $_.FillValue}},
             Mask,
-            ChoiceParameters
+            @{Name='ChoiceParameters'; Expression={ChoiceParameters $_.ChoiceParameters.ChildNodes}}
     }
     $map
 }
@@ -86,8 +115,8 @@ function ChildObjects ($nodes) {
                     @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
                     FillChecking,
                     ChoiceFoldersAndItems,
-                    ChoiceParameterLinks,
-                    ChoiceParameters,
+                    @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
+                    @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
                     QuickChoice,
                     CreateOnInput,
                     ChoiceForm,
@@ -146,8 +175,8 @@ function ChildObjects ($nodes) {
                     @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
                     FillChecking,
                     ChoiceFoldersAndItems,
-                    ChoiceParameterLinks,
-                    ChoiceParameters,
+                    @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
+                    @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
                     QuickChoice,
                     CreateOnInput,
                     ChoiceForm,
@@ -180,8 +209,8 @@ function ChildObjects ($nodes) {
                     @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
                     FillChecking,
                     ChoiceFoldersAndItems,
-                    ChoiceParameterLinks,
-                    ChoiceParameters,
+                    @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
+                    @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
                     QuickChoice,
                     CreateOnInput,
                     ChoiceForm,
@@ -430,8 +459,8 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
         @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
         FillChecking,
         ChoiceFoldersAndItems,
-        ChoiceParameterLinks,
-        ChoiceParameters,
+        @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
+        @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
         QuickChoice,
         ChoiceForm,
         LinkByType,
