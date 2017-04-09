@@ -470,3 +470,29 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
 }
 
 SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'CommonCommands'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.CommonCommand.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment,
+        Group,
+        Representation,
+        @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
+        @{Name='Picture'; Expression={Picture $prop.Picture}},
+        Shortcut,
+        IncludeHelpInContents,
+        @{Name='CommandParameterType'; Expression={ListOfNames $prop.CommandParameterType.ChildNodes}},
+        ParameterUseMode,
+        ModifiesData 
+}
+
+SaveAsZippedJson $list $name
