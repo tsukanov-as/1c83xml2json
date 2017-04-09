@@ -536,3 +536,20 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
 }
 
 SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'Roles'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.Role.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment
+}
+
+SaveAsZippedJson $list $name
