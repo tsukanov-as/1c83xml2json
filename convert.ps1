@@ -542,7 +542,9 @@ SaveAsZippedJson $list $name
 $name = 'Roles'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+$directory = "$path\$name"
+
+Get-ChildItem $directory -Filter *.xml | ForEach-Object {
     [xml]$data = Get-Content $_.FullName
     $prop = $data.MetaDataObject.Role.Properties
     $list += $prop |
@@ -553,3 +555,31 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
 }
 
 SaveAsZippedJson $list $name
+
+$name = 'Rights'
+$table = @{}
+
+foreach ($prop in $list) {
+    $role = $prop.Name
+    [xml]$rights = Get-Content "$directory\$role\Ext\$name.xml"
+    $rights.Rights.object | ForEach-Object {
+        if ($_) {
+            $x = $table[$_.Name]
+            if (!$x) {$x = @{}; $table.Add($_.Name, $x)}
+            $_.Right | ForEach-Object {
+                if ($_.value -eq 'true') {
+                    $x[$_.name] += ,$role
+                }
+            }
+        }
+    }
+    $delist = @()
+    foreach ($key in $table.Keys) {
+        if ($table[$key].Count -eq 0) {$delist += $key}
+    }
+    foreach ($key in $delist) {
+        $table.Remove($key)
+    }
+}
+
+SaveAsZippedJson $table $name
