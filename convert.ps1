@@ -496,3 +496,43 @@ Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
 }
 
 SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'FunctionalOptions'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.FunctionalOption.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment,
+        Location,
+        PrivilegedGetMode,
+        @{Name='Content'; Expression={ListOfNames $prop.Content.ChildNodes}} 
+}
+
+SaveAsZippedJson $list $name
+
+#----------------------------------------------------------------------------------------------------------------------
+
+$name = 'EventSubscriptions'
+$list = @()
+
+Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
+    [xml]$data = Get-Content $_.FullName
+    $prop = $data.MetaDataObject.EventSubscription.Properties
+    $list += $prop |
+    Select-Object `
+        Name,
+        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
+        Comment,
+        @{Name='Source'; Expression={ListOfNames $prop.Source.ChildNodes}},
+        Event,
+        Handler
+}
+
+SaveAsZippedJson $list $name
