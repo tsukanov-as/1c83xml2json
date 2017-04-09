@@ -6,7 +6,7 @@ function MultiLang ($nodes) {
 }
 
 function SaveAsZippedJson ($list, $name) {
-    $list | ConvertTo-Json -Depth 5 | Out-File "$name.json" -Encoding 'utf8'
+    $list | ConvertTo-Json -Depth 8 | Out-File "$name.json" -Encoding 'utf8'
     Compress-Archive -Path "$name.json" -DestinationPath "$name.zip" -Force
     Remove-Item "$name.json"
 }
