@@ -25,7 +25,7 @@ function TypeValue ($node) {
             @{$node.Type = $x}
         }
         default {
-            @{$node.Type = $node.ChildNodes.Value}
+            if ($node.Type) { @{$node.Type = $node.ChildNodes.Value} }
         }
     }
 }
