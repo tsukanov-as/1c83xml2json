@@ -54,36 +54,37 @@ function ChoiceParameterLinks ($nodes) {
 
 function StandardAttributes ($nodes) {
     $map = @{}
-    $nodes | ForEach-Object {
-        $map[$_.name] = $_ | Select-Object `
+    foreach ($prop in $nodes) {
+        $map[$prop.name] = $prop | Select-Object `
             LinkByType,
             FillChecking,
             MultiLine,
             FillFromFillingValue,
             CreateOnInput,
-            @{Name='MaxValue'; Expression={TypeValue $_.MaxValue}},
-            @{Name='ToolTip'; Expression={MultiLang $_.ToolTip.ChildNodes}},
+            @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
+            @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
             ExtendedEdit,
-            @{Name='Format'; Expression={MultiLang $_.Format.ChildNodes}},
+            @{Name='Format'; Expression={MultiLang $prop.Format.ChildNodes}},
             ChoiceForm,
             QuickChoice,
             ChoiceHistoryOnInput,
-            @{Name='EditFormat'; Expression={MultiLang $_.EditFormat.ChildNodes}},
+            @{Name='EditFormat'; Expression={MultiLang $prop.EditFormat.ChildNodes}},
             PasswordMode,
             MarkNegatives,
-            @{Name='MinValue'; Expression={TypeValue $_.MinValue}},
-            @{Name='Synonym'; Expression={MultiLang $_.Synonym.ChildNodes}},
+            @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
+            @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
             Comment,
             FullTextSearch,
-            @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $_.ChoiceParameterLinks.ChildNodes}},
-            @{Name='FillValue'; Expression={TypeValue $_.FillValue}},
+            @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
+            @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
             Mask,
-            @{Name='ChoiceParameters'; Expression={ChoiceParameters $_.ChoiceParameters.ChildNodes}}
+            @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}}
     }
     $map
 }
 
 function ChildObjects ($nodes) {
+    if (!$nodes) { return }
     $attributes = @{}
     $forms = @()
     $tabularSections = @{}
@@ -92,8 +93,8 @@ function ChildObjects ($nodes) {
     $dimensions = @{}
     $resources = @{}
     $enumvalues = @{}
-    $nodes | ForEach-Object {
-        $obj = $_
+    foreach ($obj in $nodes) {
+        # $obj = $_
         switch ($obj.name) {
             'Attribute' {
                 $prop = $obj.Properties
@@ -245,8 +246,9 @@ function ChildObjects ($nodes) {
 $name = 'Documents'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Document.Properties
     $list += $prop |
     Select-Object `
@@ -303,8 +305,9 @@ SaveAsZippedJson $list $name
 $name = 'Catalogs'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Catalog.Properties
     $list += $prop |
     Select-Object `
@@ -368,8 +371,9 @@ SaveAsZippedJson $list $name
 $name = 'AccumulationRegisters'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.AccumulationRegister.Properties
     $list += $prop |
     Select-Object `
@@ -398,8 +402,9 @@ SaveAsZippedJson $list $name
 $name = 'InformationRegisters'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.InformationRegister.Properties
     $list += $prop |
     Select-Object `
@@ -435,8 +440,9 @@ SaveAsZippedJson $list $name
 $name = 'Constants'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Constant.Properties
     $list += $prop |
     Select-Object `
@@ -475,8 +481,9 @@ SaveAsZippedJson $list $name
 $name = 'Enums'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Enum.Properties
     $list += $prop |
     Select-Object `
@@ -505,8 +512,9 @@ SaveAsZippedJson $list $name
 $name = 'CommonCommands'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.CommonCommand.Properties
     $list += $prop |
     Select-Object `
@@ -531,8 +539,9 @@ SaveAsZippedJson $list $name
 $name = 'FunctionalOptions'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.FunctionalOption.Properties
     $list += $prop |
     Select-Object `
@@ -551,8 +560,9 @@ SaveAsZippedJson $list $name
 $name = 'EventSubscriptions'
 $list = @()
 
-Get-ChildItem "$path\$name" -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem "$path\$name" -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.EventSubscription.Properties
     $list += $prop |
     Select-Object `
@@ -573,8 +583,9 @@ $list = @()
 
 $directory = "$path\$name"
 
-Get-ChildItem $directory -Filter *.xml | ForEach-Object {
-    [xml]$data = Get-Content $_.FullName
+$files = Get-ChildItem $directory -Filter *.xml
+foreach ($file in $files) {
+    [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Role.Properties
     $list += $prop |
     Select-Object `
