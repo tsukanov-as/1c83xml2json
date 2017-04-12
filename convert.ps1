@@ -55,30 +55,31 @@ function ChoiceParameterLinks ($nodes) {
 function StandardAttributes ($nodes) {
     $map = @{}
     foreach ($prop in $nodes) {
-        $map[$prop.name] = $prop | Select-Object `
-            LinkByType,
-            FillChecking,
-            MultiLine,
-            FillFromFillingValue,
-            CreateOnInput,
-            @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
-            @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-            ExtendedEdit,
-            @{Name='Format'; Expression={MultiLang $prop.Format.ChildNodes}},
-            ChoiceForm,
-            QuickChoice,
-            ChoiceHistoryOnInput,
-            @{Name='EditFormat'; Expression={MultiLang $prop.EditFormat.ChildNodes}},
-            PasswordMode,
-            MarkNegatives,
-            @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
-            @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-            Comment,
-            FullTextSearch,
-            @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
-            @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
-            Mask,
-            @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}}
+        $map[$prop.name] = @{
+            LinkByType           = $prop.LinkByType
+            FillChecking         = $prop.FillChecking
+            MultiLine            = $prop.MultiLine
+            FillFromFillingValue = $prop.FillFromFillingValue
+            CreateOnInput        = $prop.CreateOnInput
+            MaxValue             = TypeValue $prop.MaxValue
+            ToolTip              = MultiLang $prop.ToolTip.ChildNodes
+            ExtendedEdit         = $prop.ExtendedEdit
+            Format               = MultiLang $prop.Format.ChildNodes
+            ChoiceForm           = $prop.ChoiceForm
+            QuickChoice          = $prop.QuickChoice
+            ChoiceHistoryOnInput = $prop.ChoiceHistoryOnInput
+            EditFormat           = MultiLang $prop.EditFormat.ChildNodes
+            PasswordMode         = $prop.PasswordMode
+            MarkNegatives        = $prop.MarkNegatives
+            MinValue             = TypeValue $prop.MinValue
+            Synonym              = MultiLang $prop.Synonym.ChildNodes
+            Comment              = $prop.Comment
+            FullTextSearch       = $prop.FullTextSearch
+            ChoiceParameterLinks = ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes
+            FillValue            = TypeValue $prop.FillValue
+            Mask                 = $prop.Mask
+            ChoiceParameters     = ChoiceParameters $prop.ChoiceParameters.ChildNodes
+        }
     }
     $map
 }
@@ -98,133 +99,139 @@ function ChildObjects ($nodes) {
         switch ($obj.name) {
             'Attribute' {
                 $prop = $obj.Properties
-                $attributes[$prop.name] = $prop | Select-Object `
-                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-                    Comment,
-                    @{Name='Type'; Expression={ListOfNames $prop.Type.ChildNodes}},
-                    PasswordMode,
-                    @{Name='Format'; Expression={MultiLang $prop.Format.ChildNodes}},
-                    @{Name='EditFormat'; Expression={MultiLang $prop.EditFormat.ChildNodes}},
-                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-                    MarkNegatives,
-                    Mask,
-                    MultiLine,
-                    ExtendedEdit,
-                    @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
-                    @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
-                    FillFromFillingValue,
-                    @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
-                    FillChecking,
-                    ChoiceFoldersAndItems,
-                    @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
-                    @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
-                    QuickChoice,
-                    CreateOnInput,
-                    ChoiceForm,
-                    LinkByType,
-                    ChoiceHistoryOnInput,
-                    Indexing,
-                    FullTextSearch
+                $attributes[$prop.name] = @{
+                    Synonym               = MultiLang $prop.Synonym.ChildNodes
+                    Comment               = $prop.Comment
+                    Type                  = ListOfNames $prop.Type.ChildNodes
+                    PasswordMode          = $prop.PasswordMode
+                    Format                = MultiLang $prop.Format.ChildNodes
+                    EditFormat            = MultiLang $prop.EditFormat.ChildNodes
+                    ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+                    MarkNegatives         = $prop.MarkNegatives
+                    Mask                  = $prop.Mask
+                    MultiLine             = $prop.MultiLine
+                    ExtendedEdit          = $prop.ExtendedEdit
+                    MinValue              = TypeValue $prop.MinValue
+                    MaxValue              = TypeValue $prop.MaxValue
+                    FillFromFillingValue  = $prop.FillFromFillingValue
+                    FillValue             = TypeValue $prop.FillValue
+                    FillChecking          = $prop.FillChecking
+                    ChoiceFoldersAndItems = $prop.ChoiceFoldersAndItems
+                    ChoiceParameterLinks  = ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes
+                    ChoiceParameters      = ChoiceParameters $prop.ChoiceParameters.ChildNodes
+                    QuickChoice           = $prop.QuickChoice 
+                    CreateOnInput         = $prop.CreateOnInput
+                    ChoiceForm            = $prop.ChoiceForm
+                    LinkByType            = $prop.LinkByType
+                    ChoiceHistoryOnInput  = $prop.ChoiceHistoryOnInput
+                    Indexing              = $prop.Indexing
+                    FullTextSearch        = $prop.FullTextSearch
+                }
             }
             'Form' {
                 $forms += $obj.ChildNodes.Value
             }
             'TabularSection' {
                 $prop = $obj.Properties
-                $tabularSections[$prop.name] = $prop | Select-Object `
-                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-                    Comment,
-                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-                    FillChecking,
-                    @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
-                    @{Name='ChildObjects'; Expression={ChildObjects $obj.ChildObjects.ChildNodes}}
+                $tabularSections[$prop.name] = @{
+                    Synonym            = MultiLang $prop.Synonym.ChildNodes
+                    Comment            = $prop.Comment
+                    ToolTip            = MultiLang $prop.ToolTip.ChildNodes
+                    FillChecking       = $prop.FillChecking
+                    StandardAttributes = StandardAttributes $prop.StandardAttributes.ChildNodes
+                    ChildObjects       = ChildObjects $obj.ChildObjects.ChildNodes
+                }
             }
             'Command' {
                 $prop = $obj.Properties
-                $commands[$prop.name] = $prop | Select-Object `
-                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-                    Comment,
-                    Group,
-                    @{Name='CommandParameterType'; Expression={ListOfNames $prop.CommandParameterType.ChildNodes}},
-                    ParameterUseMode,
-                    ModifiesData,
-                    Representation,
-                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-                    @{Name='Picture'; Expression={Picture $prop.Picture}},
-                    Shortcut
+                $commands[$prop.name] = @{
+                    Synonym              = MultiLang $prop.Synonym.ChildNodes
+                    Comment              = $prop.Comment
+                    Group                = $prop.Group
+                    CommandParameterType = ListOfNames $prop.CommandParameterType.ChildNodes
+                    ParameterUseMode     = $prop.ParameterUseMode
+                    ModifiesData         = $prop.ModifiesData
+                    Representation       = $prop.Representation
+                    ToolTip              = MultiLang $prop.ToolTip.ChildNodes
+                    Picture              = Picture $prop.Picture
+                    Shortcut             = $prop.Shortcut
+                }
             }
             'Template' {
                 $templates += $obj.ChildNodes.Value
             }
             'Dimension' {
                 $prop = $obj.Properties
-                $dimensions[$prop.name] = $prop | Select-Object `
-                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-                    Comment,
-                    @{Name='Type'; Expression={ListOfNames $prop.Type.ChildNodes}},
-                    PasswordMode,
-                    @{Name='Format'; Expression={MultiLang $prop.Format.ChildNodes}},
-                    @{Name='EditFormat'; Expression={MultiLang $prop.EditFormat.ChildNodes}},
-                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-                    MarkNegatives,
-                    Mask,
-                    MultiLine,
-                    ExtendedEdit,
-                    @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
-                    @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
-                    FillFromFillingValue,
-                    @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
-                    FillChecking,
-                    ChoiceFoldersAndItems,
-                    @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
-                    @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
-                    QuickChoice,
-                    CreateOnInput,
-                    ChoiceForm,
-                    LinkByType,
-                    ChoiceHistoryOnInput,
-                    Master,
-                    MainFilter,
-                    DenyIncompleteValues,
-                    Indexing,
-                    FullTextSearch,
-                    UseInTotals
+                $dimensions[$prop.name] = @{
+                    Synonym               = MultiLang $prop.Synonym.ChildNodes
+                    Comment               = $prop.Comment
+                    Type                  = ListOfNames $prop.Type.ChildNodes
+                    PasswordMode          = $prop.PasswordMode
+                    Format                = MultiLang $prop.Format.ChildNodes
+                    EditFormat            = MultiLang $prop.EditFormat.ChildNodes
+                    ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+                    MarkNegatives         = $prop.MarkNegatives
+                    Mask                  = $prop.Mask
+                    MultiLine             = $prop.MultiLine
+                    ExtendedEdit          = $prop.ExtendedEdit
+                    MinValue              = TypeValue $prop.MinValue
+                    MaxValue              = TypeValue $prop.MaxValue
+                    FillFromFillingValue  = $prop.FillFromFillingValue
+                    FillValue             = TypeValue $prop.FillValue
+                    FillChecking          = $prop.FillChecking
+                    ChoiceFoldersAndItems = $prop.ChoiceFoldersAndItems
+                    ChoiceParameterLinks  = ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes
+                    ChoiceParameters      = ChoiceParameters $prop.ChoiceParameters.ChildNodes
+                    QuickChoice           = $prop.QuickChoice
+                    CreateOnInput         = $prop.CreateOnInput
+                    ChoiceForm            = $prop.ChoiceForm
+                    LinkByType            = $prop.LinkByType
+                    ChoiceHistoryOnInput  = $prop.ChoiceHistoryOnInput
+                    Master                = $prop.Master
+                    MainFilter            = $prop.MainFilter
+                    DenyIncompleteValues  = $prop.DenyIncompleteValues
+                    Indexing              = $prop.Indexing
+                    FullTextSearch        = $prop.FullTextSearch
+                    UseInTotals           = $prop.UseInTotals
+                }
             }
             'Resource' {
                 $prop = $obj.Properties
-                $resources[$prop.name] = $prop | Select-Object `
-                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-                    Comment,
-                    @{Name='Type'; Expression={ListOfNames $prop.Type.ChildNodes}},
-                    PasswordMode,
-                    @{Name='Format'; Expression={MultiLang $prop.Format.ChildNodes}},
-                    @{Name='EditFormat'; Expression={MultiLang $prop.EditFormat.ChildNodes}},
-                    @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-                    MarkNegatives,
-                    Mask,
-                    MultiLine,
-                    ExtendedEdit,
-                    @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
-                    @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
-                    FillFromFillingValue,
-                    @{Name='FillValue'; Expression={TypeValue $prop.FillValue}},
-                    FillChecking,
-                    ChoiceFoldersAndItems,
-                    @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
-                    @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
-                    QuickChoice,
-                    CreateOnInput,
-                    ChoiceForm,
-                    LinkByType,
-                    ChoiceHistoryOnInput,
-                    Indexing,
-                    FullTextSearch
+                $resources[$prop.name] = @{
+                    Synonym               = MultiLang $prop.Synonym.ChildNodes
+                    Comment               = $prop.Comment
+                    Type                  = ListOfNames $prop.Type.ChildNodes
+                    PasswordMode          = $prop.PasswordMode
+                    Format                = MultiLang $prop.Format.ChildNodes
+                    EditFormat            = MultiLang $prop.EditFormat.ChildNodes
+                    ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+                    MarkNegatives         = $prop.MarkNegatives
+                    Mask                  = $prop.Mask
+                    MultiLine             = $prop.MultiLine
+                    ExtendedEdit          = $prop.ExtendedEdit
+                    MinValue              = TypeValue $prop.MinValue
+                    MaxValue              = TypeValue $prop.MaxValue
+                    FillFromFillingValue  = $prop.FillFromFillingValue
+                    FillValue             = TypeValue $prop.FillValue
+                    FillChecking          = $prop.FillChecking
+                    ChoiceFoldersAndItems = $prop.ChoiceFoldersAndItems
+                    ChoiceParameterLinks  = ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes
+                    ChoiceParameters      = ChoiceParameters $prop.ChoiceParameters.ChildNodes
+                    QuickChoice           = $prop.QuickChoice
+                    CreateOnInput         = $prop.CreateOnInput
+                    ChoiceForm            = $prop.ChoiceForm
+                    LinkByType            = $prop.LinkByType
+                    ChoiceHistoryOnInput  = $prop.ChoiceHistoryOnInput
+                    Indexing              = $prop.Indexing
+                    FullTextSearch        = $prop.FullTextSearch
+                }
             }
             'EnumValue' {
                 $prop = $obj.Properties
-                $enumvalues[$prop.name] = $prop | Select-Object `
-                    @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-                    Comment
+                $enumvalues[$prop.name] = @{
+                    Synonym = MultiLang $prop.Synonym.ChildNodes
+                    Comment = $prop.Comment
+                }
             }
             default {Write-Host $_}
         }
@@ -250,52 +257,52 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Document.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        UseStandardCommands,
-        Numerator,
-        NumberType,
-        NumberLength,
-        NumberAllowedLength,
-        NumberPeriodicity,
-        CheckUnique,
-        Autonumbering,
-        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
-        # Characteristics,
-        @{Name='BasedOn'; Expression={ListOfNames $prop.BasedOn.ChildNodes}},
-        @{Name='InputByString'; Expression={ListOfNames $prop.InputByString.ChildNodes}},
-        CreateOnInput,
-        SearchStringModeOnInputByString,
-        FullTextSearchOnInputByString,
-        ChoiceDataGetModeOnInputByString,
-        DefaultObjectForm,
-        DefaultListForm,
-        DefaultChoiceForm,
-        AuxiliaryObjectForm,
-        AuxiliaryListForm,
-        AuxiliaryChoiceForm,
-        Posting,
-        RealTimePosting,
-        RegisterRecordsDeletion,
-        RegisterRecordsWritingOnPost,
-        SequenceFilling,
-        @{Name='RegisterRecords'; Expression={ListOfNames $prop.RegisterRecords.ChildNodes}},
-        PostInPrivilegedMode,
-        UnpostInPrivilegedMode,
-        IncludeHelpInContents,
-        @{Name='DataLockFields'; Expression={ListOfNames $prop.DataLockFields.ChildNodes}},
-        DataLockControlMode,
-        FullTextSearch,
-        @{Name='ObjectPresentation'; Expression={MultiLang $prop.ObjectPresentation.ChildNodes}},
-        @{Name='ExtendedObjectPresentation'; Expression={MultiLang $prop.ExtendedObjectPresentation.ChildNodes}},
-        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
-        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
-        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
-        ChoiceHistoryOnInput,
-        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.Document.ChildObjects.ChildNodes}}
+    $list += @{
+        Name                             = $prop.Name
+        Synonym                          = MultiLang $prop.Synonym.ChildNodes
+        Comment                          = $prop.Comment
+        UseStandardCommands              = $prop.UseStandardCommands
+        Numerator                        = $prop.Numerator
+        NumberType                       = $prop.NumberType
+        NumberLength                     = $prop.NumberLength
+        NumberAllowedLength              = $prop.NumberAllowedLength
+        NumberPeriodicity                = $prop.NumberPeriodicity
+        CheckUnique                      = $prop.CheckUnique
+        Autonumbering                    = $prop.Autonumbering
+        StandardAttributes               = StandardAttributes $prop.StandardAttributes.ChildNodes
+        # Characteristics                = $prop.Characteristics
+        BasedOn                          = ListOfNames $prop.BasedOn.ChildNodes
+        InputByString                    = ListOfNames $prop.InputByString.ChildNodes
+        CreateOnInput                    = $prop.CreateOnInput
+        SearchStringModeOnInputByString  = $prop.SearchStringModeOnInputByString
+        FullTextSearchOnInputByString    = $prop.FullTextSearchOnInputByString
+        ChoiceDataGetModeOnInputByString = $prop.ChoiceDataGetModeOnInputByString
+        DefaultObjectForm                = $prop.DefaultObjectForm
+        DefaultListForm                  = $prop.DefaultListForm
+        DefaultChoiceForm                = $prop.DefaultChoiceForm
+        AuxiliaryObjectForm              = $prop.AuxiliaryObjectForm
+        AuxiliaryListForm                = $prop.AuxiliaryListForm
+        AuxiliaryChoiceForm              = $prop.AuxiliaryChoiceForm
+        Posting                          = $prop.Posting
+        RealTimePosting                  = $prop.RealTimePosting
+        RegisterRecordsDeletion          = $prop.RegisterRecordsDeletion
+        RegisterRecordsWritingOnPost     = $prop.RegisterRecordsWritingOnPost
+        SequenceFilling                  = $prop.SequenceFilling
+        RegisterRecords                  = ListOfNames $prop.RegisterRecords.ChildNodes
+        PostInPrivilegedMode             = $prop.PostInPrivilegedMode
+        UnpostInPrivilegedMode           = $prop.UnpostInPrivilegedMode
+        IncludeHelpInContents            = $prop.IncludeHelpInContents
+        DataLockFields                   = ListOfNames $prop.DataLockFields.ChildNodes
+        DataLockControlMode              = $prop.DataLockControlMode
+        FullTextSearch                   = $prop.FullTextSearch
+        ObjectPresentation               = MultiLang $prop.ObjectPresentation.ChildNodes
+        ExtendedObjectPresentation       = MultiLang $prop.ExtendedObjectPresentation.ChildNodes
+        ListPresentation                 = MultiLang $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation         = MultiLang $prop.ExtendedListPresentation.ChildNodes
+        Explanation                      = MultiLang $prop.Explanation.ChildNodes
+        ChoiceHistoryOnInput             = $prop.ChoiceHistoryOnInput
+        ChildObjects                     = ChildObjects $data.MetaDataObject.Document.ChildObjects.ChildNodes
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -309,59 +316,59 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Catalog.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Hierarchical,
-        HierarchyType,
-        LimitLevelCount,
-        LevelCount,
-        FoldersOnTop,
-        UseStandardCommands,
-        @{Name='Owners'; Expression={ListOfNames $prop.Owners.ChildNodes}},
-        SubordinationUse,
-        CodeLength,
-        DescriptionLength,
-        CodeType,
-        CodeAllowedLength,
-        CodeSeries,
-        CheckUnique,
-        Autonumbering,
-        DefaultPresentation,
-        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
-        # Characteristics,
-        PredefinedDataUpdate,
-        EditType,
-        QuickChoice,
-        ChoiceMode,
-        @{Name='InputByString'; Expression={ListOfNames $prop.InputByString.ChildNodes}},
-        SearchStringModeOnInputByString,
-        FullTextSearchOnInputByString,
-        ChoiceDataGetModeOnInputByString,
-        DefaultObjectForm,
-        DefaultFolderForm,
-        DefaultListForm,
-        DefaultChoiceForm,
-        DefaultFolderChoiceForm,
-        AuxiliaryObjectForm,
-        AuxiliaryFolderForm,
-        AuxiliaryListForm,
-        AuxiliaryChoiceForm,
-        AuxiliaryFolderChoiceForm,
-        IncludeHelpInContents,
-        @{Name='BasedOn'; Expression={ListOfNames $prop.BasedOn.ChildNodes}},
-        @{Name='DataLockFields'; Expression={ListOfNames $prop.DataLockFields.ChildNodes}},
-        DataLockControlMode,
-        FullTextSearch,
-        @{Name='ObjectPresentation'; Expression={MultiLang $prop.ObjectPresentation.ChildNodes}},
-        @{Name='ExtendedObjectPresentation'; Expression={MultiLang $prop.ExtendedObjectPresentation.ChildNodes}},
-        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
-        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
-        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
-        CreateOnInput,
-        ChoiceHistoryOnInput,
-        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.Catalog.ChildObjects.ChildNodes}}
+    $list += @{
+        Name                             = $prop.Name
+        Synonym                          = MultiLang $prop.Synonym.ChildNodes
+        Hierarchical                     = $prop.Hierarchical
+        HierarchyType                    = $prop.HierarchyType
+        LimitLevelCount                  = $prop.LimitLevelCount
+        LevelCount                       = $prop.LevelCount
+        FoldersOnTop                     = $prop.FoldersOnTop
+        UseStandardCommands              = $prop.UseStandardCommands
+        Owners                           = ListOfNames $prop.Owners.ChildNodes
+        SubordinationUse                 = $prop.SubordinationUse
+        CodeLength                       = $prop.CodeLength
+        DescriptionLength                = $prop.DescriptionLength
+        CodeType                         = $prop.CodeType
+        CodeAllowedLength                = $prop.CodeAllowedLength
+        CodeSeries                       = $prop.CodeSeries
+        CheckUnique                      = $prop.CheckUnique
+        Autonumbering                    = $prop.Autonumbering
+        DefaultPresentation              = $prop.DefaultPresentation
+        StandardAttributes               = StandardAttributes $prop.StandardAttributes.ChildNodes
+        # Characteristics                = $prop.Characteristics
+        PredefinedDataUpdate             = $prop.PredefinedDataUpdate
+        EditType                         = $prop.EditType
+        QuickChoice                      = $prop.QuickChoice
+        ChoiceMode                       = $prop.ChoiceMode
+        InputByString                    = ListOfNames $prop.InputByString.ChildNodes
+        SearchStringModeOnInputByString  = $prop.SearchStringModeOnInputByString
+        FullTextSearchOnInputByString    = $prop.FullTextSearchOnInputByString
+        ChoiceDataGetModeOnInputByString = $prop.ChoiceDataGetModeOnInputByString
+        DefaultObjectForm                = $prop.DefaultObjectForm
+        DefaultFolderForm                = $prop.DefaultFolderForm
+        DefaultListForm                  = $prop.DefaultListForm
+        DefaultChoiceForm                = $prop.DefaultChoiceForm
+        DefaultFolderChoiceForm          = $prop.DefaultFolderChoiceForm
+        AuxiliaryObjectForm              = $prop.AuxiliaryObjectForm
+        AuxiliaryFolderForm              = $prop.AuxiliaryFolderForm
+        AuxiliaryListForm                = $prop.AuxiliaryListForm
+        AuxiliaryChoiceForm              = $prop.AuxiliaryChoiceForm
+        AuxiliaryFolderChoiceForm        = $prop.AuxiliaryFolderChoiceForm
+        IncludeHelpInContents            = $prop.IncludeHelpInContents
+        BasedOn                          = ListOfNames $prop.BasedOn.ChildNodes
+        DataLockFields                   = ListOfNames $prop.DataLockFields.ChildNodes
+        DataLockControlMode              = $prop.DataLockControlMode
+        FullTextSearch                   = $prop.FullTextSearch
+        ObjectPresentation               = MultiLang $prop.ObjectPresentation.ChildNodes
+        ExtendedObjectPresentation       = MultiLang $prop.ExtendedObjectPresentation.ChildNodes
+        ListPresentation                 = MultiLang $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation         = MultiLang $prop.ExtendedListPresentation.ChildNodes
+        Explanation                      = MultiLang $prop.Explanation.ChildNodes
+        CreateOnInput                    = $prop.CreateOnInput
+        ChoiceHistoryOnInput             = $prop.ChoiceHistoryOnInput
+        ChildObjects                     = ChildObjects $data.MetaDataObject.Catalog.ChildObjects.ChildNodes
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -375,24 +382,24 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.AccumulationRegister.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        UseStandardCommands,
-        DefaultListForm,
-        AuxiliaryListForm,
-        RegisterType,
-        IncludeHelpInContents,
-        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
-        DataLockControlMode,
-        FullTextSearch,
-        EnableTotalsSplitting,
-        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
-        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
-        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
-        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.AccumulationRegister.ChildObjects.ChildNodes}}
+    $list += @{
+        Name                     = $prop.Name
+        Synonym                  = MultiLang $prop.Synonym.ChildNodes
+        Comment                  = $prop.Comment
+        UseStandardCommands      = $prop.UseStandardCommands
+        DefaultListForm          = $prop.DefaultListForm
+        AuxiliaryListForm        = $prop.AuxiliaryListForm
+        RegisterType             = $prop.RegisterType
+        IncludeHelpInContents    = $prop.IncludeHelpInContents
+        StandardAttributes       = StandardAttributes $prop.StandardAttributes.ChildNodes
+        DataLockControlMode      = $prop.DataLockControlMode
+        FullTextSearch           = $prop.FullTextSearch
+        EnableTotalsSplitting    = $prop.EnableTotalsSplitting
+        ListPresentation         = MultiLang $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation = MultiLang $prop.ExtendedListPresentation.ChildNodes
+        Explanation              = MultiLang $prop.Explanation.ChildNodes
+        ChildObjects             = ChildObjects $data.MetaDataObject.AccumulationRegister.ChildObjects.ChildNodes
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -406,31 +413,31 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.InformationRegister.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        UseStandardCommands,
-        DefaultRecordForm,
-        DefaultListForm,
-        AuxiliaryRecordForm,
-        AuxiliaryListForm,
-        @{Name='StandardAttributes'; Expression={StandardAttributes $prop.StandardAttributes.ChildNodes}},
-        InformationRegisterPeriodicity,
-        WriteMode,
-        MainFilterOnPeriod,
-        IncludeHelpInContents,
-        DataLockControlMode,
-        FullTextSearch,
-        EnableTotalsSliceFirst,
-        EnableTotalsSliceLast,
-        @{Name='RecordPresentation'; Expression={MultiLang $prop.RecordPresentation.ChildNodes}},
-        @{Name='ExtendedRecordPresentation'; Expression={MultiLang $prop.ExtendedRecordPresentation.ChildNodes}},
-        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
-        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
-        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
-        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.InformationRegister.ChildObjects.ChildNodes}}
+    $list += @{
+        Name                           = $prop.Name
+        Synonym                        = MultiLang $prop.Synonym.ChildNodes
+        Comment                        = $prop.Comment
+        UseStandardCommands            = $prop.UseStandardCommands
+        DefaultRecordForm              = $prop.DefaultRecordForm
+        DefaultListForm                = $prop.DefaultListForm
+        AuxiliaryRecordForm            = $prop.AuxiliaryRecordForm
+        AuxiliaryListForm              = $prop.AuxiliaryListForm
+        StandardAttributes             = StandardAttributes $prop.StandardAttributes.ChildNodes
+        InformationRegisterPeriodicity = $prop.InformationRegisterPeriodicity
+        WriteMode                      = $prop.WriteMode
+        MainFilterOnPeriod             = $prop.MainFilterOnPeriod
+        IncludeHelpInContents          = $prop.IncludeHelpInContents
+        DataLockControlMode            = $prop.DataLockControlMode
+        FullTextSearch                 = $prop.FullTextSearch
+        EnableTotalsSliceFirst         = $prop.EnableTotalsSliceFirst
+        EnableTotalsSliceLast          = $prop.EnableTotalsSliceLast
+        RecordPresentation             = MultiLang $prop.RecordPresentation.ChildNodes
+        ExtendedRecordPresentation     = MultiLang $prop.ExtendedRecordPresentation.ChildNodes
+        ListPresentation               = MultiLang $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation       = MultiLang $prop.ExtendedListPresentation.ChildNodes
+        Explanation                    = MultiLang $prop.Explanation.ChildNodes
+        ChildObjects                   = ChildObjects $data.MetaDataObject.InformationRegister.ChildObjects.ChildNodes
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -444,34 +451,34 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Constant.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        UseStandardCommands,
-        DefaultForm,
-        @{Name='ExtendedPresentation'; Expression={MultiLang $prop.ExtendedPresentation.ChildNodes}},
-        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
-        PasswordMode,
-        @{Name='Format'; Expression={MultiLang $prop.Format.ChildNodes}},
-        @{Name='EditFormat'; Expression={MultiLang $prop.EditFormat.ChildNodes}},
-        @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-        MarkNegatives,
-        Mask,
-        MultiLine,
-        ExtendedEdit,
-        @{Name='MinValue'; Expression={TypeValue $prop.MinValue}},
-        @{Name='MaxValue'; Expression={TypeValue $prop.MaxValue}},
-        FillChecking,
-        ChoiceFoldersAndItems,
-        @{Name='ChoiceParameterLinks'; Expression={ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes}},
-        @{Name='ChoiceParameters'; Expression={ChoiceParameters $prop.ChoiceParameters.ChildNodes}},
-        QuickChoice,
-        ChoiceForm,
-        LinkByType,
-        ChoiceHistoryOnInput,
-        DataLockControlMode
+    $list += @{
+        Name                  = $prop.Name
+        Synonym               = MultiLang $prop.Synonym.ChildNodes
+        Comment               = $prop.Comment
+        UseStandardCommands   = $prop.UseStandardCommands
+        DefaultForm           = $prop.DefaultForm
+        ExtendedPresentation  = MultiLang $prop.ExtendedPresentation.ChildNodes
+        Explanation           = MultiLang $prop.Explanation.ChildNodes
+        PasswordMode          = $prop.PasswordMode
+        Format                = MultiLang $prop.Format.ChildNodes
+        EditFormat            = MultiLang $prop.EditFormat.ChildNodes
+        ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+        MarkNegatives         = $prop.MarkNegatives
+        Mask                  = $prop.Mask
+        MultiLine             = $prop.MultiLine
+        ExtendedEdit          = $prop.ExtendedEdit
+        MinValue              = TypeValue $prop.MinValue
+        MaxValue              = TypeValue $prop.MaxValue
+        FillChecking          = $prop.FillChecking
+        ChoiceFoldersAndItems = $prop.ChoiceFoldersAndItems
+        ChoiceParameterLinks  = ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes
+        ChoiceParameters      = ChoiceParameters $prop.ChoiceParameters.ChildNodes
+        QuickChoice           = $prop.QuickChoice
+        ChoiceForm            = $prop.ChoiceForm
+        LinkByType            = $prop.LinkByType
+        ChoiceHistoryOnInput  = $prop.ChoiceHistoryOnInput
+        DataLockControlMode   = $prop.DataLockControlMode
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -485,24 +492,24 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Enum.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        UseStandardCommands,
-        # Characteristics,
-        QuickChoice,
-        ChoiceMode,
-        DefaultListForm,
-        DefaultChoiceForm,
-        AuxiliaryListForm,
-        AuxiliaryChoiceForm,
-        @{Name='ListPresentation'; Expression={MultiLang $prop.ListPresentation.ChildNodes}},
-        @{Name='ExtendedListPresentation'; Expression={MultiLang $prop.ExtendedListPresentation.ChildNodes}},
-        @{Name='Explanation'; Expression={MultiLang $prop.Explanation.ChildNodes}},
-        ChoiceHistoryOnInput,
-        @{Name='ChildObjects'; Expression={ChildObjects $data.MetaDataObject.Enum.ChildObjects.ChildNodes}}
+    $list += @{
+        Name                     = $prop.Name
+        Synonym                  = MultiLang $prop.Synonym.ChildNodes
+        Comment                  = $prop.Comment
+        UseStandardCommands      = $prop.UseStandardCommands
+        # Characteristics        = $prop.Characteristics
+        QuickChoice              = $prop.QuickChoice
+        ChoiceMode               = $prop.ChoiceMode
+        DefaultListForm          = $prop.DefaultListForm
+        DefaultChoiceForm        = $prop.DefaultChoiceForm
+        AuxiliaryListForm        = $prop.AuxiliaryListForm
+        AuxiliaryChoiceForm      = $prop.AuxiliaryChoiceForm
+        ListPresentation         = MultiLang $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation = MultiLang $prop.ExtendedListPresentation.ChildNodes
+        Explanation              = MultiLang $prop.Explanation.ChildNodes
+        ChoiceHistoryOnInput     = $prop.ChoiceHistoryOnInput
+        ChildObjects             = ChildObjects $data.MetaDataObject.Enum.ChildObjects.ChildNodes
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -516,20 +523,20 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.CommonCommand.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        Group,
-        Representation,
-        @{Name='ToolTip'; Expression={MultiLang $prop.ToolTip.ChildNodes}},
-        @{Name='Picture'; Expression={Picture $prop.Picture}},
-        Shortcut,
-        IncludeHelpInContents,
-        @{Name='CommandParameterType'; Expression={ListOfNames $prop.CommandParameterType.ChildNodes}},
-        ParameterUseMode,
-        ModifiesData 
+    $list += @{
+        Name                  = $prop.Name
+        Synonym               = MultiLang $prop.Synonym.ChildNodes
+        Comment               = $prop.Comment
+        Group                 = $prop.Group
+        Representation        = $prop.Representation
+        ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+        Picture               = Picture $prop.Picture
+        Shortcut              = $prop.Shortcut
+        IncludeHelpInContents = $prop.IncludeHelpInContents
+        CommandParameterType  = ListOfNames $prop.CommandParameterType.ChildNodes
+        ParameterUseMode      = $prop.ParameterUseMode
+        ModifiesData          = $prop.ModifiesData
+    } 
 }
 
 SaveAsZippedJson $list $name
@@ -543,14 +550,14 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.FunctionalOption.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        Location,
-        PrivilegedGetMode,
-        @{Name='Content'; Expression={ListOfNames $prop.Content.ChildNodes}} 
+    $list += @{
+        Name              = $prop.Name
+        Synonym           = MultiLang $prop.Synonym.ChildNodes
+        Comment           = $prop.Comment
+        Location          = $prop.Location
+        PrivilegedGetMode = $prop.PrivilegedGetMode
+        Content           = ListOfNames $prop.Content.ChildNodes
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -564,14 +571,14 @@ $files = Get-ChildItem "$path\$name" -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.EventSubscription.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment,
-        @{Name='Source'; Expression={ListOfNames $prop.Source.ChildNodes}},
-        Event,
-        Handler
+    $list += @{
+        Name    = $prop.Name
+        Synonym = MultiLang $prop.Synonym.ChildNodes
+        Comment = $prop.Comment
+        Source  = ListOfNames $prop.Source.ChildNodes
+        Event   = $prop.Event
+        Handler = $prop.Handler
+    }
 }
 
 SaveAsZippedJson $list $name
@@ -587,11 +594,11 @@ $files = Get-ChildItem $directory -Filter *.xml
 foreach ($file in $files) {
     [xml]$data = Get-Content $file.FullName
     $prop = $data.MetaDataObject.Role.Properties
-    $list += $prop |
-    Select-Object `
-        Name,
-        @{Name='Synonym'; Expression={MultiLang $prop.Synonym.ChildNodes}},
-        Comment
+    $list += @{
+        Name = $prop.Name
+        Synonym = MultiLang $prop.Synonym.ChildNodes
+        Comment = $prop.Comment
+    }
 }
 
 SaveAsZippedJson $list $name
