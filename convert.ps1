@@ -2,7 +2,7 @@ $path = 'C:\temp\Config'
 Remove-Item '*.zip'
 
 function MultiLang ($nodes) {
-    $map = @{}; $nodes | Sort-Object -Property lang | ForEach-Object {$map[$_.lang] = $_.Content}; $map
+    $map = @{}; foreach ($x in $nodes) {$map[$x.lang] = $x.Content}; $map
 }
 
 function SaveAsZippedJson ($list, $name) {
@@ -12,7 +12,7 @@ function SaveAsZippedJson ($list, $name) {
 }
 
 function ListOfNames ($items) {
-    $list = @(); $items | Sort-Object -Property InnerText | ForEach-Object {$list += $_.InnerText}; $list -join ","
+    @(foreach ($x in $items) {$x.InnerText}) -join ","
 }
 
 function TypeValue ($node) {
