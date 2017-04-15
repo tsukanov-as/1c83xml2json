@@ -45,9 +45,10 @@ function ChoiceParameters ($nodes) {
 function ChoiceParameterLinks ($nodes) {
     $map = @{}
     foreach ($item in $nodes) {
-        $map[$item.Name] = $item | Select-Object `
-            @{Name='DataPath'; Expression={TypeValue $item.DataPath}},
-            ValueChange
+        $map[$item.Name] = @{
+            DataPath = TypeValue $item.DataPath
+            ValueChange = $item.ValueChange
+        }        
     }
     $map
 }
