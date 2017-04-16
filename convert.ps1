@@ -2,7 +2,7 @@ $path = 'C:\temp\Config'
 Remove-Item '*.zip'
 
 function MultiLang ($nodes) {
-    $map = @{}; foreach ($x in $nodes) {$map[$x.lang] = $x.Content}; $map
+    @(foreach ($x in $nodes) { @{Lang = $x.Lang; Content = $x.Content} })
 }
 
 function SaveAsZippedJson ($list, $name) {
@@ -18,14 +18,10 @@ function ListOfNames ($items) {
 function TypeValue ($node) {
     switch ($node.Type) {
         'v8:FixedArray' {
-            $x = @()
-            $node.ChildNodes | ForEach-Object {
-                $x += TypeValue $_   
-            }
-            @{$node.Type = $x}
+            @{Name = $node.Type; Value = @(foreach ($x in $node.ChildNodes) {TypeValue $x})}
         }
         default {
-            if ($node.Type) { @{$node.Type = $node.ChildNodes.Value} }
+            if ($node.Type) { @{Type = $node.Type; Value = $node.ChildNodes.Value} }
         }
     }
 }
@@ -35,22 +31,13 @@ function Picture ($node) {
 }
 
 function ChoiceParameters ($nodes) {
-    $map = @{}
-    foreach ($item in $nodes) {
-        $map[$item.Attributes.Value] = TypeValue $item.ChildNodes
-    }
-    $map
+    @(foreach ($item in $nodes) { @{Name = $item.Attributes.Value; Value = TypeValue $item.ChildNodes} })
 }
 
 function ChoiceParameterLinks ($nodes) {
-    $map = @{}
-    foreach ($item in $nodes) {
-        $map[$item.Name] = @{
-            DataPath = TypeValue $item.DataPath
-            ValueChange = $item.ValueChange
-        }        
-    }
-    $map
+    @(foreach ($item in $nodes) {
+        @{Name = $item.Name; DataPath = TypeValue $item.DataPath; ValueChange = $item.ValueChange}        
+    })
 }
 
 function StandardAttributes ($nodes) {
@@ -96,7 +83,6 @@ function ChildObjects ($nodes) {
     $resources = @{}
     $enumvalues = @{}
     foreach ($obj in $nodes) {
-        # $obj = $_
         switch ($obj.name) {
             'Attribute' {
                 $prop = $obj.Properties
@@ -320,6 +306,7 @@ foreach ($file in $files) {
     $list += @{
         Name                             = $prop.Name
         Synonym                          = MultiLang $prop.Synonym.ChildNodes
+        Comment                          = $prop.Comment
         Hierarchical                     = $prop.Hierarchical
         HierarchyType                    = $prop.HierarchyType
         LimitLevelCount                  = $prop.LimitLevelCount
