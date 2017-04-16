@@ -1,7 +1,7 @@
 $path = 'C:\temp\Config'
 Remove-Item '*.zip'
 
-function MultiLang ($nodes) {
+function Multilingual ($nodes) {
     @(foreach ($x in $nodes) { @{Lang = $x.Lang; Content = $x.Content} })
 }
 
@@ -50,17 +50,17 @@ function StandardAttributes ($nodes) {
             FillFromFillingValue = $prop.FillFromFillingValue
             CreateOnInput        = $prop.CreateOnInput
             MaxValue             = TypeValue $prop.MaxValue
-            ToolTip              = MultiLang $prop.ToolTip.ChildNodes
+            ToolTip              = Multilingual $prop.ToolTip.ChildNodes
             ExtendedEdit         = $prop.ExtendedEdit
-            Format               = MultiLang $prop.Format.ChildNodes
+            Format               = Multilingual $prop.Format.ChildNodes
             ChoiceForm           = $prop.ChoiceForm
             QuickChoice          = $prop.QuickChoice
             ChoiceHistoryOnInput = $prop.ChoiceHistoryOnInput
-            EditFormat           = MultiLang $prop.EditFormat.ChildNodes
+            EditFormat           = Multilingual $prop.EditFormat.ChildNodes
             PasswordMode         = $prop.PasswordMode
             MarkNegatives        = $prop.MarkNegatives
             MinValue             = TypeValue $prop.MinValue
-            Synonym              = MultiLang $prop.Synonym.ChildNodes
+            Synonym              = Multilingual $prop.Synonym.ChildNodes
             Comment              = $prop.Comment
             FullTextSearch       = $prop.FullTextSearch
             ChoiceParameterLinks = ChoiceParameterLinks $prop.ChoiceParameterLinks.ChildNodes
@@ -87,13 +87,13 @@ function ChildObjects ($nodes) {
             'Attribute' {
                 $prop = $obj.Properties
                 $attributes[$prop.name] = @{
-                    Synonym               = MultiLang $prop.Synonym.ChildNodes
+                    Synonym               = Multilingual $prop.Synonym.ChildNodes
                     Comment               = $prop.Comment
                     Type                  = ListOfNames $prop.Type.ChildNodes
                     PasswordMode          = $prop.PasswordMode
-                    Format                = MultiLang $prop.Format.ChildNodes
-                    EditFormat            = MultiLang $prop.EditFormat.ChildNodes
-                    ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+                    Format                = Multilingual $prop.Format.ChildNodes
+                    EditFormat            = Multilingual $prop.EditFormat.ChildNodes
+                    ToolTip               = Multilingual $prop.ToolTip.ChildNodes
                     MarkNegatives         = $prop.MarkNegatives
                     Mask                  = $prop.Mask
                     MultiLine             = $prop.MultiLine
@@ -121,9 +121,9 @@ function ChildObjects ($nodes) {
             'TabularSection' {
                 $prop = $obj.Properties
                 $tabularSections[$prop.name] = @{
-                    Synonym            = MultiLang $prop.Synonym.ChildNodes
+                    Synonym            = Multilingual $prop.Synonym.ChildNodes
                     Comment            = $prop.Comment
-                    ToolTip            = MultiLang $prop.ToolTip.ChildNodes
+                    ToolTip            = Multilingual $prop.ToolTip.ChildNodes
                     FillChecking       = $prop.FillChecking
                     StandardAttributes = StandardAttributes $prop.StandardAttributes.ChildNodes
                     ChildObjects       = ChildObjects $obj.ChildObjects.ChildNodes
@@ -132,14 +132,14 @@ function ChildObjects ($nodes) {
             'Command' {
                 $prop = $obj.Properties
                 $commands[$prop.name] = @{
-                    Synonym              = MultiLang $prop.Synonym.ChildNodes
+                    Synonym              = Multilingual $prop.Synonym.ChildNodes
                     Comment              = $prop.Comment
                     Group                = $prop.Group
                     CommandParameterType = ListOfNames $prop.CommandParameterType.ChildNodes
                     ParameterUseMode     = $prop.ParameterUseMode
                     ModifiesData         = $prop.ModifiesData
                     Representation       = $prop.Representation
-                    ToolTip              = MultiLang $prop.ToolTip.ChildNodes
+                    ToolTip              = Multilingual $prop.ToolTip.ChildNodes
                     Picture              = Picture $prop.Picture
                     Shortcut             = $prop.Shortcut
                 }
@@ -150,13 +150,13 @@ function ChildObjects ($nodes) {
             'Dimension' {
                 $prop = $obj.Properties
                 $dimensions[$prop.name] = @{
-                    Synonym               = MultiLang $prop.Synonym.ChildNodes
+                    Synonym               = Multilingual $prop.Synonym.ChildNodes
                     Comment               = $prop.Comment
                     Type                  = ListOfNames $prop.Type.ChildNodes
                     PasswordMode          = $prop.PasswordMode
-                    Format                = MultiLang $prop.Format.ChildNodes
-                    EditFormat            = MultiLang $prop.EditFormat.ChildNodes
-                    ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+                    Format                = Multilingual $prop.Format.ChildNodes
+                    EditFormat            = Multilingual $prop.EditFormat.ChildNodes
+                    ToolTip               = Multilingual $prop.ToolTip.ChildNodes
                     MarkNegatives         = $prop.MarkNegatives
                     Mask                  = $prop.Mask
                     MultiLine             = $prop.MultiLine
@@ -185,13 +185,13 @@ function ChildObjects ($nodes) {
             'Resource' {
                 $prop = $obj.Properties
                 $resources[$prop.name] = @{
-                    Synonym               = MultiLang $prop.Synonym.ChildNodes
+                    Synonym               = Multilingual $prop.Synonym.ChildNodes
                     Comment               = $prop.Comment
                     Type                  = ListOfNames $prop.Type.ChildNodes
                     PasswordMode          = $prop.PasswordMode
-                    Format                = MultiLang $prop.Format.ChildNodes
-                    EditFormat            = MultiLang $prop.EditFormat.ChildNodes
-                    ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+                    Format                = Multilingual $prop.Format.ChildNodes
+                    EditFormat            = Multilingual $prop.EditFormat.ChildNodes
+                    ToolTip               = Multilingual $prop.ToolTip.ChildNodes
                     MarkNegatives         = $prop.MarkNegatives
                     Mask                  = $prop.Mask
                     MultiLine             = $prop.MultiLine
@@ -216,7 +216,7 @@ function ChildObjects ($nodes) {
             'EnumValue' {
                 $prop = $obj.Properties
                 $enumvalues[$prop.name] = @{
-                    Synonym = MultiLang $prop.Synonym.ChildNodes
+                    Synonym = Multilingual $prop.Synonym.ChildNodes
                     Comment = $prop.Comment
                 }
             }
@@ -246,7 +246,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.Document.Properties
     $list += @{
         Name                             = $prop.Name
-        Synonym                          = MultiLang $prop.Synonym.ChildNodes
+        Synonym                          = Multilingual $prop.Synonym.ChildNodes
         Comment                          = $prop.Comment
         UseStandardCommands              = $prop.UseStandardCommands
         Numerator                        = $prop.Numerator
@@ -282,11 +282,11 @@ foreach ($file in $files) {
         DataLockFields                   = ListOfNames $prop.DataLockFields.ChildNodes
         DataLockControlMode              = $prop.DataLockControlMode
         FullTextSearch                   = $prop.FullTextSearch
-        ObjectPresentation               = MultiLang $prop.ObjectPresentation.ChildNodes
-        ExtendedObjectPresentation       = MultiLang $prop.ExtendedObjectPresentation.ChildNodes
-        ListPresentation                 = MultiLang $prop.ListPresentation.ChildNodes
-        ExtendedListPresentation         = MultiLang $prop.ExtendedListPresentation.ChildNodes
-        Explanation                      = MultiLang $prop.Explanation.ChildNodes
+        ObjectPresentation               = Multilingual $prop.ObjectPresentation.ChildNodes
+        ExtendedObjectPresentation       = Multilingual $prop.ExtendedObjectPresentation.ChildNodes
+        ListPresentation                 = Multilingual $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation         = Multilingual $prop.ExtendedListPresentation.ChildNodes
+        Explanation                      = Multilingual $prop.Explanation.ChildNodes
         ChoiceHistoryOnInput             = $prop.ChoiceHistoryOnInput
         ChildObjects                     = ChildObjects $data.MetaDataObject.Document.ChildObjects.ChildNodes
     }
@@ -305,7 +305,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.Catalog.Properties
     $list += @{
         Name                             = $prop.Name
-        Synonym                          = MultiLang $prop.Synonym.ChildNodes
+        Synonym                          = Multilingual $prop.Synonym.ChildNodes
         Comment                          = $prop.Comment
         Hierarchical                     = $prop.Hierarchical
         HierarchyType                    = $prop.HierarchyType
@@ -348,11 +348,11 @@ foreach ($file in $files) {
         DataLockFields                   = ListOfNames $prop.DataLockFields.ChildNodes
         DataLockControlMode              = $prop.DataLockControlMode
         FullTextSearch                   = $prop.FullTextSearch
-        ObjectPresentation               = MultiLang $prop.ObjectPresentation.ChildNodes
-        ExtendedObjectPresentation       = MultiLang $prop.ExtendedObjectPresentation.ChildNodes
-        ListPresentation                 = MultiLang $prop.ListPresentation.ChildNodes
-        ExtendedListPresentation         = MultiLang $prop.ExtendedListPresentation.ChildNodes
-        Explanation                      = MultiLang $prop.Explanation.ChildNodes
+        ObjectPresentation               = Multilingual $prop.ObjectPresentation.ChildNodes
+        ExtendedObjectPresentation       = Multilingual $prop.ExtendedObjectPresentation.ChildNodes
+        ListPresentation                 = Multilingual $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation         = Multilingual $prop.ExtendedListPresentation.ChildNodes
+        Explanation                      = Multilingual $prop.Explanation.ChildNodes
         CreateOnInput                    = $prop.CreateOnInput
         ChoiceHistoryOnInput             = $prop.ChoiceHistoryOnInput
         ChildObjects                     = ChildObjects $data.MetaDataObject.Catalog.ChildObjects.ChildNodes
@@ -372,7 +372,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.AccumulationRegister.Properties
     $list += @{
         Name                     = $prop.Name
-        Synonym                  = MultiLang $prop.Synonym.ChildNodes
+        Synonym                  = Multilingual $prop.Synonym.ChildNodes
         Comment                  = $prop.Comment
         UseStandardCommands      = $prop.UseStandardCommands
         DefaultListForm          = $prop.DefaultListForm
@@ -383,9 +383,9 @@ foreach ($file in $files) {
         DataLockControlMode      = $prop.DataLockControlMode
         FullTextSearch           = $prop.FullTextSearch
         EnableTotalsSplitting    = $prop.EnableTotalsSplitting
-        ListPresentation         = MultiLang $prop.ListPresentation.ChildNodes
-        ExtendedListPresentation = MultiLang $prop.ExtendedListPresentation.ChildNodes
-        Explanation              = MultiLang $prop.Explanation.ChildNodes
+        ListPresentation         = Multilingual $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation = Multilingual $prop.ExtendedListPresentation.ChildNodes
+        Explanation              = Multilingual $prop.Explanation.ChildNodes
         ChildObjects             = ChildObjects $data.MetaDataObject.AccumulationRegister.ChildObjects.ChildNodes
     }
 }
@@ -403,7 +403,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.InformationRegister.Properties
     $list += @{
         Name                           = $prop.Name
-        Synonym                        = MultiLang $prop.Synonym.ChildNodes
+        Synonym                        = Multilingual $prop.Synonym.ChildNodes
         Comment                        = $prop.Comment
         UseStandardCommands            = $prop.UseStandardCommands
         DefaultRecordForm              = $prop.DefaultRecordForm
@@ -419,11 +419,11 @@ foreach ($file in $files) {
         FullTextSearch                 = $prop.FullTextSearch
         EnableTotalsSliceFirst         = $prop.EnableTotalsSliceFirst
         EnableTotalsSliceLast          = $prop.EnableTotalsSliceLast
-        RecordPresentation             = MultiLang $prop.RecordPresentation.ChildNodes
-        ExtendedRecordPresentation     = MultiLang $prop.ExtendedRecordPresentation.ChildNodes
-        ListPresentation               = MultiLang $prop.ListPresentation.ChildNodes
-        ExtendedListPresentation       = MultiLang $prop.ExtendedListPresentation.ChildNodes
-        Explanation                    = MultiLang $prop.Explanation.ChildNodes
+        RecordPresentation             = Multilingual $prop.RecordPresentation.ChildNodes
+        ExtendedRecordPresentation     = Multilingual $prop.ExtendedRecordPresentation.ChildNodes
+        ListPresentation               = Multilingual $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation       = Multilingual $prop.ExtendedListPresentation.ChildNodes
+        Explanation                    = Multilingual $prop.Explanation.ChildNodes
         ChildObjects                   = ChildObjects $data.MetaDataObject.InformationRegister.ChildObjects.ChildNodes
     }
 }
@@ -441,16 +441,16 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.Constant.Properties
     $list += @{
         Name                  = $prop.Name
-        Synonym               = MultiLang $prop.Synonym.ChildNodes
+        Synonym               = Multilingual $prop.Synonym.ChildNodes
         Comment               = $prop.Comment
         UseStandardCommands   = $prop.UseStandardCommands
         DefaultForm           = $prop.DefaultForm
-        ExtendedPresentation  = MultiLang $prop.ExtendedPresentation.ChildNodes
-        Explanation           = MultiLang $prop.Explanation.ChildNodes
+        ExtendedPresentation  = Multilingual $prop.ExtendedPresentation.ChildNodes
+        Explanation           = Multilingual $prop.Explanation.ChildNodes
         PasswordMode          = $prop.PasswordMode
-        Format                = MultiLang $prop.Format.ChildNodes
-        EditFormat            = MultiLang $prop.EditFormat.ChildNodes
-        ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+        Format                = Multilingual $prop.Format.ChildNodes
+        EditFormat            = Multilingual $prop.EditFormat.ChildNodes
+        ToolTip               = Multilingual $prop.ToolTip.ChildNodes
         MarkNegatives         = $prop.MarkNegatives
         Mask                  = $prop.Mask
         MultiLine             = $prop.MultiLine
@@ -482,7 +482,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.Enum.Properties
     $list += @{
         Name                     = $prop.Name
-        Synonym                  = MultiLang $prop.Synonym.ChildNodes
+        Synonym                  = Multilingual $prop.Synonym.ChildNodes
         Comment                  = $prop.Comment
         UseStandardCommands      = $prop.UseStandardCommands
         # Characteristics        = $prop.Characteristics
@@ -492,9 +492,9 @@ foreach ($file in $files) {
         DefaultChoiceForm        = $prop.DefaultChoiceForm
         AuxiliaryListForm        = $prop.AuxiliaryListForm
         AuxiliaryChoiceForm      = $prop.AuxiliaryChoiceForm
-        ListPresentation         = MultiLang $prop.ListPresentation.ChildNodes
-        ExtendedListPresentation = MultiLang $prop.ExtendedListPresentation.ChildNodes
-        Explanation              = MultiLang $prop.Explanation.ChildNodes
+        ListPresentation         = Multilingual $prop.ListPresentation.ChildNodes
+        ExtendedListPresentation = Multilingual $prop.ExtendedListPresentation.ChildNodes
+        Explanation              = Multilingual $prop.Explanation.ChildNodes
         ChoiceHistoryOnInput     = $prop.ChoiceHistoryOnInput
         ChildObjects             = ChildObjects $data.MetaDataObject.Enum.ChildObjects.ChildNodes
     }
@@ -513,11 +513,11 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.CommonCommand.Properties
     $list += @{
         Name                  = $prop.Name
-        Synonym               = MultiLang $prop.Synonym.ChildNodes
+        Synonym               = Multilingual $prop.Synonym.ChildNodes
         Comment               = $prop.Comment
         Group                 = $prop.Group
         Representation        = $prop.Representation
-        ToolTip               = MultiLang $prop.ToolTip.ChildNodes
+        ToolTip               = Multilingual $prop.ToolTip.ChildNodes
         Picture               = Picture $prop.Picture
         Shortcut              = $prop.Shortcut
         IncludeHelpInContents = $prop.IncludeHelpInContents
@@ -540,7 +540,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.FunctionalOption.Properties
     $list += @{
         Name              = $prop.Name
-        Synonym           = MultiLang $prop.Synonym.ChildNodes
+        Synonym           = Multilingual $prop.Synonym.ChildNodes
         Comment           = $prop.Comment
         Location          = $prop.Location
         PrivilegedGetMode = $prop.PrivilegedGetMode
@@ -561,7 +561,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.EventSubscription.Properties
     $list += @{
         Name    = $prop.Name
-        Synonym = MultiLang $prop.Synonym.ChildNodes
+        Synonym = Multilingual $prop.Synonym.ChildNodes
         Comment = $prop.Comment
         Source  = ListOfNames $prop.Source.ChildNodes
         Event   = $prop.Event
@@ -584,7 +584,7 @@ foreach ($file in $files) {
     $prop = $data.MetaDataObject.Role.Properties
     $list += @{
         Name = $prop.Name
-        Synonym = MultiLang $prop.Synonym.ChildNodes
+        Synonym = Multilingual $prop.Synonym.ChildNodes
         Comment = $prop.Comment
     }
 }
